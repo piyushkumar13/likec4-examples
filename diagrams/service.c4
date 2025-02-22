@@ -1,0 +1,246 @@
+specification {
+
+    element client
+    element microservice
+    element UI
+    element system
+    element message-broker
+
+    relationship depends-on
+    relationship uses {
+        color red
+        line dotted
+        head diamond
+        tail dot
+    }
+
+    color theme-color #050505
+    color element-color #00739D
+    color similar-element-color #010b0f
+
+    tag deprecated
+    tag jira-1234
+    tag epic-3456
+
+}
+
+model {
+
+    client customer 'Our Customer' {
+        description 'This is the abc-company tenant'
+        style {
+            shape person
+            color secondary
+        }
+    }
+
+    guard-s = system {
+
+        title 'GUARD'
+        description '
+        This is abc-company users authorization designer.
+        It is used to provide the mechanism to authorize users using RBAC.'
+
+        style {
+            color sky
+            // opacity 10%
+
+        }
+
+        UI guard-ui { // nested element
+
+            #jira-1234 #epic-3456
+
+            title 'Access Management'
+            description 'Access Management Portal'
+            technology 'React JS'
+            link ssh://bastion.internal 'SSH'
+
+            metadata {
+                prop1 'value1'
+                prop2 '
+                        apiVersion: apps/v1
+                        kind: StatefulSet
+                        metadata:
+                        name: app-statefulset
+                        spec: {}
+                    '
+            }
+            style {
+                shape browser
+                // icon https://icons.terrastruct.com/dev%2Freact.svg
+                // icon tech:aarch64
+                icon aws:lambda
+                // icon gcp:service-discovery
+                // icon azure:active-directory-connect-health
+                // color similar-element-color
+                color sky
+
+
+            }
+        }
+        microservice guard-api { // nested element
+            description '
+                Guard api comprises of HTTP restful endpoints.
+                It performs roles creation, assignment of roles,
+                tenant onboarding etc.
+            '
+
+            style {
+                color similar-element-color
+                // color sky
+            }
+
+            .uses mithril.gads {
+                #jira-1234
+                title 'HTTP call'
+                description 'calls GADS to store data in OPA system'
+                technology 'HTTP/HTTPs'
+            }
+        }
+
+        guard-ui -> guard-api "UI calls HTTP endpoints of guard-api" {
+            style {
+                color sky
+                line solid
+            }
+        }
+
+        // .uses mithril // we can do this
+
+        // guard-api -[depends-on]-> mithril.gads // we can do this as well or provide .uses mithril.gads within guard-api as well.
+    }
+
+    system mithril {
+
+        microservice gads {
+            title 'GADS Rest API'
+            description 'Management api to feed Mithril OPA'
+        }
+
+        message-broker kafka {
+            title 'Kafka'
+
+            style {
+                shape queue
+            }
+        }
+
+        microservice opa {
+            title 'Mithril OPA'
+        }
+
+        gads .uses kafka
+        kafka -[uses]-> opa
+    }
+
+    // customer -> guard-ui "Customer interacting with guard-ui"
+    customer -> guard-s.guard-ui "Customer interacting with guard-ui" // we can also do like this. Elements accessed using dot namespaced by parent.
+
+}
+
+views {
+    view index {
+        title 'Whole overview'
+        include *
+        autoLayout LeftRight 120 110
+    }
+
+    view of guard-s {
+
+        // title 'My scoped view'
+        include -> guard-s
+
+
+        include -> guard-s.*  
+
+        
+
+        // include customer <-> guard-s.**
+        // include *
+        // include guard-api // element predicate
+        // include guard-ui // element predicate
+        
+        // include guard-s
+        // include guard-s.*
+
+        // include guard-ui with {
+        //     title 'UI for GUARD'
+        //     icon tech:react-bootstrap
+        // }
+
+
+
+        include
+            guard-api with {
+                title 'Rest service for GUARD'
+                icon tech:spring
+
+                navigateTo view2
+            }
+        
+        // include guard-api with {
+        //     title 'Rest service for GUARD'
+        //     icon tech:spring
+
+        //     navigateTo view2
+        // }
+
+        // include guard-s.**
+
+    }
+
+    view view2 {
+
+        group 'Mithril Components' {
+            include mithril.*
+
+            include
+                mithril.opa with {
+                    navigateTo example1 // pointing to dynamic view
+                }
+        }
+    }
+
+    view of mithril {
+        include *
+    }
+
+
+    view
+    dynamic view example1 {
+        title 'My specific usecase1'
+
+        customer -> guard-api {
+            notes '
+                This is the usecase when customers can directly call the guard-apis.
+                For example, it can called for integrating IGA systems with GUARD.
+            '
+
+            navigateTo example2
+        }
+
+        customer <- guard-api 'returns JSON'
+
+
+    }
+
+    view
+    dynamic view example2 {
+        title 'My specific usecase2'
+
+        parallel {
+
+            customer -> guard-api {
+                notes '
+                This is the usecase when customers can directly call the guard-apis.
+                For example, it can called for integrating IGA systems with GUARD.
+            '
+            }
+
+            customer -> guard-ui
+        }
+    }
+}
+
+    

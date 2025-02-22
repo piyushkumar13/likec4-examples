@@ -1,0 +1,108 @@
+specification {
+    deploymentNode environment
+    deploymentNode region
+    deploymentNode zone
+    deploymentNode kubernetes {
+        // Nodes have same styling options
+        style {
+            color blue
+            icon tech:kubernetes
+        }
+    }
+    // deploymentNode vm {
+    //     // Common properties for the kind
+    //     notation 'Virtual Machine'
+    //     technology 'VMware'
+    // }
+}
+
+deployment {
+    environment prod {
+        region us-1 {
+            title 'us-east-1'
+            kubernetes eks-1 {
+                zone zone1 {
+                    instanceOf guard-s.guard-ui
+                    instanceOf guard-s.guard-api
+                }
+
+                zone zone2 {
+                    ui = instanceOf guard-s.guard-ui
+
+                    // two instances of same element
+                    api1 = instanceOf guard-s.guard-api
+                    api2 = instanceOf guard-s.guard-api
+                }
+
+                //   // Deploy to any level, not only leaf nodes
+                //   // Assume database shared between zones
+                //   db = instanceOf database
+            }
+        }
+        region us-2 {
+            title 'us-west-2'
+
+            kubernetes eks-2 {
+                zone zone1 {
+                    instanceOf guard-s.guard-ui
+                    instanceOf guard-s.guard-api
+                }
+
+                zone zone2 {
+                    ui = instanceOf guard-s.guard-ui
+
+                    // two instances of same element
+                    api1 = instanceOf guard-s.guard-api
+                    api2 = instanceOf guard-s.guard-api
+                }
+
+                //   // Deploy to any level, not only leaf nodes
+                //   // Assume database shared between zones
+                //   db = instanceOf database
+            }
+        }
+    }
+}
+
+views {
+
+        deployment view dview1 {
+        title 'deployment view 1'
+
+        // include *
+        // include * -> *
+
+        // include prod
+        // include prod.*
+
+        include prod
+        include prod.us-1
+        include prod.us-2
+    }
+
+    deployment view us-east-1 {
+        title 'View of us-east-1'
+        
+        include prod.us-1.eks-1
+        include prod.us-1.**
+    }
+
+    deployment view us-west-2 {
+        title 'View of us-west-2'
+        
+        include prod.us-2.eks-2
+        include prod.us-2.**
+    }
+
+    deployment view full_deployment_view {
+        title 'Full deployment view'
+
+        // include *
+        // include * -> *
+
+        include prod
+        include prod.us-1
+        include prod.us-2
+        include prod.**
+    }
+}
