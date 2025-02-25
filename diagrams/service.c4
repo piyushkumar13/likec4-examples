@@ -34,9 +34,9 @@ model {
         }
     }
 
-    guard-s = system {
+    atom-s = system {
 
-        title 'GUARD'
+        title 'ATOM-S'
         description '
         This is abc-company users authorization designer.
         It is used to provide the mechanism to authorize users using RBAC.'
@@ -47,7 +47,7 @@ model {
 
         }
 
-        UI guard-ui { // nested element
+        UI atom-ui { // nested element
 
             #jira-1234 #epic-3456
 
@@ -79,9 +79,9 @@ model {
 
             }
         }
-        microservice guard-api { // nested element
+        microservice atom-api { // nested element
             description '
-                Guard api comprises of HTTP restful endpoints.
+                atom-api comprises of HTTP restful endpoints.
                 It performs roles creation, assignment of roles,
                 tenant onboarding etc.
             '
@@ -91,31 +91,31 @@ model {
                 // color sky
             }
 
-            .uses mithril.gads {
+            .uses electron.eads {
                 #jira-1234
                 title 'HTTP call'
-                description 'calls GADS to store data in OPA system'
+                description 'calls eads to store data in OPA system'
                 technology 'HTTP/HTTPs'
             }
         }
 
-        guard-ui -> guard-api "UI calls HTTP endpoints of guard-api" {
+        atom-ui -> atom-api "UI calls HTTP endpoints of atom-api" {
             style {
                 color sky
                 line solid
             }
         }
 
-        // .uses mithril // we can do this
+        // .uses electron // we can do this
 
-        // guard-api -[depends-on]-> mithril.gads // we can do this as well or provide .uses mithril.gads within guard-api as well.
+        // atom-api -[depends-on]-> electron.eads // we can do this as well or provide .uses electron.eads within atom-api as well.
     }
 
-    system mithril {
+    system electron {
 
-        microservice gads {
-            title 'GADS Rest API'
-            description 'Management api to feed Mithril OPA'
+        microservice eads {
+            title 'eads Rest API'
+            description 'Management api to feed electron OPA'
         }
 
         message-broker kafka {
@@ -127,15 +127,15 @@ model {
         }
 
         microservice opa {
-            title 'Mithril OPA'
+            title 'electron OPA'
         }
 
-        gads .uses kafka
+        eads .uses kafka
         kafka -[uses]-> opa
     }
 
-    // customer -> guard-ui "Customer interacting with guard-ui"
-    customer -> guard-s.guard-ui "Customer interacting with guard-ui" // we can also do like this. Elements accessed using dot namespaced by parent.
+    // customer -> atom-ui "Customer interacting with atom-ui"
+    customer -> atom-s.atom-ui "Customer interacting with atom-ui" // we can also do like this. Elements accessed using dot namespaced by parent.
 
 }
 
@@ -146,63 +146,63 @@ views {
         autoLayout LeftRight 120 110
     }
 
-    view of guard-s {
+    view of atom-s {
 
         // title 'My scoped view'
-        include -> guard-s
+        include -> atom-s
 
 
-        include -> guard-s.*  
+        include -> atom-s.*  
 
         
 
-        // include customer <-> guard-s.**
+        // include customer <-> atom-s.**
         // include *
-        // include guard-api // element predicate
-        // include guard-ui // element predicate
+        // include atom-api // element predicate
+        // include atom-ui // element predicate
         
-        // include guard-s
-        // include guard-s.*
+        // include atom-s
+        // include atom-s.*
 
-        // include guard-ui with {
-        //     title 'UI for GUARD'
+        // include atom-ui with {
+        //     title 'UI for atom'
         //     icon tech:react-bootstrap
         // }
 
 
 
         include
-            guard-api with {
-                title 'Rest service for GUARD'
+            atom-api with {
+                title 'Rest service for atom'
                 icon tech:spring
 
                 navigateTo view2
             }
         
-        // include guard-api with {
-        //     title 'Rest service for GUARD'
+        // include atom-api with {
+        //     title 'Rest service for atom'
         //     icon tech:spring
 
         //     navigateTo view2
         // }
 
-        // include guard-s.**
+        // include atom-s.**
 
     }
 
     view view2 {
 
-        group 'Mithril Components' {
-            include mithril.*
+        group 'electron Components' {
+            include electron.*
 
             include
-                mithril.opa with {
+                electron.opa with {
                     navigateTo example1 // pointing to dynamic view
                 }
         }
     }
 
-    view of mithril {
+    view of electron {
         include *
     }
 
@@ -211,16 +211,16 @@ views {
     dynamic view example1 {
         title 'My specific usecase1'
 
-        customer -> guard-api {
+        customer -> atom-api {
             notes '
-                This is the usecase when customers can directly call the guard-apis.
-                For example, it can called for integrating IGA systems with GUARD.
+                This is the usecase when customers can directly call the atom-apis.
+                For example, it can called for integrating IGA systems with atom.
             '
 
             navigateTo example2
         }
 
-        customer <- guard-api 'returns JSON'
+        customer <- atom-api 'returns JSON'
 
 
     }
@@ -231,14 +231,14 @@ views {
 
         parallel {
 
-            customer -> guard-api {
+            customer -> atom-api {
                 notes '
-                This is the usecase when customers can directly call the guard-apis.
-                For example, it can called for integrating IGA systems with GUARD.
+                This is the usecase when customers can directly call the atom-apis.
+                For example, it can called for integrating IGA systems with atom.
             '
             }
 
-            customer -> guard-ui
+            customer -> atom-ui
         }
     }
 }

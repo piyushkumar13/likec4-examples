@@ -23,16 +23,16 @@ deployment {
             title 'us-east-1'
             kubernetes eks-1 {
                 zone zone1 {
-                    instanceOf guard-s.guard-ui
-                    instanceOf guard-s.guard-api
+                    instanceOf atom-s.atom-ui
+                    instanceOf atom-s.atom-api
                 }
 
                 zone zone2 {
-                    ui = instanceOf guard-s.guard-ui
+                    ui = instanceOf atom-s.atom-ui
 
                     // two instances of same element
-                    api1 = instanceOf guard-s.guard-api
-                    api2 = instanceOf guard-s.guard-api
+                    api1 = instanceOf atom-s.atom-api
+                    api2 = instanceOf atom-s.atom-api
                 }
 
                 //   // Deploy to any level, not only leaf nodes
@@ -45,16 +45,16 @@ deployment {
 
             kubernetes eks-2 {
                 zone zone1 {
-                    instanceOf guard-s.guard-ui
-                    instanceOf guard-s.guard-api
+                    instanceOf atom-s.atom-ui
+                    instanceOf atom-s.atom-api
                 }
 
                 zone zone2 {
-                    ui = instanceOf guard-s.guard-ui
+                    ui = instanceOf atom-s.atom-ui
 
                     // two instances of same element
-                    api1 = instanceOf guard-s.guard-api
-                    api2 = instanceOf guard-s.guard-api
+                    api1 = instanceOf atom-s.atom-api
+                    api2 = instanceOf atom-s.atom-api
                 }
 
                 //   // Deploy to any level, not only leaf nodes
